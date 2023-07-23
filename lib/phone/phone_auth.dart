@@ -26,11 +26,14 @@ class _PhoneAuthState extends State<PhoneAuth> {
           children: [
             TextFormField(
               controller: phoneCon,
+              keyboardType: TextInputType.phone,
+
               decoration: InputDecoration(hintText: "phone no"),
             ),
             ElevatedButton(
                 onPressed: () {
                   auth.verifyPhoneNumber(
+                    timeout: const Duration(seconds: 60),
                     phoneNumber: phoneCon.text,
                     verificationCompleted: (_) {},
                     verificationFailed: (e) {
@@ -40,7 +43,9 @@ class _PhoneAuthState extends State<PhoneAuth> {
                       Navigator.push(
                           context,
                           CupertinoPageRoute(
-                              builder: (_) => VerificationSreen()));
+                              builder: (_) => VerificationSreen(
+                                    varificationId: verificationId,
+                                  )));
                     },
                     codeAutoRetrievalTimeout: (e) {
                       print(e.toString());

@@ -3,6 +3,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'database/post.dart';
+import 'database/show_post.dart';
 import 'email_password/email_pass_signin.dart';
 import 'email_password/email_pass_signup.dart';
 import 'home.dart';
@@ -24,7 +26,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.brown),
-      home:SigninEmailPass()
+      home:ShowPost()
 
     );
   }
