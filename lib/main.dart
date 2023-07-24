@@ -28,8 +28,8 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.brown),
       home:
-      //RealTimePractise()
-      ShowPost()
+      RealTimePractise()
+     // ShowPost()
 
     );
   }

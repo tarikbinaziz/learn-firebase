@@ -11,9 +11,11 @@ class RealTimePractise extends StatefulWidget {
 
 class _RealTimePractiseState extends State<RealTimePractise> {
   final realTimeDbRef = FirebaseDatabase.instance.ref("users");
+  String? id;
 
   final nameCon = TextEditingController();
   final passCon = TextEditingController();
+  final updateCon = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -64,31 +66,61 @@ class _RealTimePractiseState extends State<RealTimePractise> {
                 child: FirebaseAnimatedList(
                     query: realTimeDbRef,
                     itemBuilder: (_, snapshot, animation, index) {
+                      var dataKey = snapshot.key;
                       return ListTile(
                         title: Text(snapshot.child("name").value.toString()),
+                        trailing: IconButton(
+                          onPressed: () {
+                            updateCon.text=snapshot.child("name").value.toString();
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text("update"),
+                                    content: TextField(controller: updateCon,),
+                                    actions: [
+                                    TextButton(
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text("cancel")),
+                                     TextButton(
+                                              onPressed: () {
+                                                realTimeDbRef.child(dataKey!).update({
+                                                  "name": updateCon.text.toLowerCase()
+                                                });
+                                                Navigator.pop(context);
+                                              },
+                                              child: Text("update"))
+                                    ],
+                                  );
+                                });
+                          },
+                          icon: Icon(Icons.edit),
+                        ),
                       );
                     })),
-            Expanded(
-              child: StreamBuilder(
-                  stream: realTimeDbRef.onValue,
-                  builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
-                    Map map = snapshot.data!.snapshot.value as dynamic;
-                    List<dynamic> list = [];
-                    list.clear();
-                    list = map.values.toList();
-                    if (!snapshot.hasData) {
-                      return CircularProgressIndicator();
-                    } else {
-                      return ListView.builder(
-                          itemCount: snapshot.data!.snapshot.children.length,
-                          itemBuilder: (_, index) {
-                            return ListTile(
-                              title: Text(list[index]["name"]),
-                            );
-                          });
-                    }
-                  }),
-            )
+            // Expanded(
+            //   child: StreamBuilder(
+            //       stream: realTimeDbRef.onValue,
+            //       builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
+            //         Map map = snapshot.data!.snapshot.value as dynamic;
+            //         List<dynamic> list = [];
+            //         list.clear();
+            //         list = map.values.toList();
+            //         if (!snapshot.hasData) {
+            //           return CircularProgressIndicator();
+            //         } else {
+            //           return ListView.builder(
+            //               itemCount: snapshot.data!.snapshot.children.length,
+            //               itemBuilder: (_, index) {
+            //                 return ListTile(
+            //                   title: Text(list[index]["name"]),
+            //                 );
+            //               });
+            //         }
+            //       }),
+            // )
           ],
         ),
       ),
