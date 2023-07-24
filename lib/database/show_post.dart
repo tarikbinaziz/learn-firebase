@@ -122,6 +122,27 @@ class _ShowPostState extends State<ShowPost> {
                     }
                     return Container();
                   }),
+            ),
+            Expanded(
+              child: StreamBuilder(
+                  stream: ref.onValue,
+                  builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
+                    Map map = snapshot.data!.snapshot.value as dynamic;
+                    List<dynamic> list = [];
+                    list.clear();
+                    list = map.values.toList();
+                    if (!snapshot.hasData) {
+                      return CircularProgressIndicator();
+                    } else {
+                      return ListView.builder(
+                          itemCount: snapshot.data!.snapshot.children.length,
+                          itemBuilder: (_, index) {
+                            return ListTile(
+                              title: Text(list[index]["title"]),
+                            );
+                          });
+                    }
+                  }),
             )
           ],
         ),

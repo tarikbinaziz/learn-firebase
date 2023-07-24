@@ -1,6 +1,7 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:learn_firebase_flutter/practise.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'database/post.dart';
@@ -26,7 +27,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.brown),
-      home:ShowPost()
+      home:
+      //RealTimePractise()
+      ShowPost()
 
     );
   }
