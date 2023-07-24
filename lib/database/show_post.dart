@@ -14,7 +14,43 @@ class ShowPost extends StatefulWidget {
 class _ShowPostState extends State<ShowPost> {
   final auth = FirebaseDatabase.instance;
   final ref = FirebaseDatabase.instance.ref("post");
-  final searchCon=TextEditingController();
+  final searchCon = TextEditingController();
+  final updateCon = TextEditingController();
+
+  showMyDialouge(String title, id) {
+    updateCon.text = title;
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("update"),
+            content: TextField(
+              controller: updateCon,
+            ),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text("cancel")),
+              TextButton(
+                  onPressed: () {
+                    ref.child(id)
+                        .update({"title": updateCon.text.toLowerCase()}).then(
+                      (value) => ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text("post updated"),
+                        ),
+                      ),
+                    );
+                    Navigator.pop(context);
+                  },
+                  child: Text("update")),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,28 +72,55 @@ class _ShowPostState extends State<ShowPost> {
               controller: searchCon,
               decoration: InputDecoration(
                   hintText: "search", border: OutlineInputBorder()),
-              onChanged: (String value){
-                setState(() {
-
-                });
+              onChanged: (String value) {
+                setState(() {});
               },
             ),
             Expanded(
               child: FirebaseAnimatedList(
                   query: ref,
                   itemBuilder: (_, snapshot, animation, index) {
-                    final title=snapshot.child("title").value.toString();
-                    if(searchCon.text.isEmpty){
+                    final title = snapshot.child("title").value.toString();
+                    if (searchCon.text.isEmpty) {
                       return ListTile(
                         title: Text(snapshot.child("title").value.toString()),
+                        subtitle: Text(snapshot.child("id").value.toString()),
+                        trailing: PopupMenuButton(
+                            icon: Icon(Icons.more_vert),
+                            itemBuilder: (_) {
+                              return [
+                                PopupMenuItem(
+                                  child: ListTile(
+                                    onTap: () {
+                                      showMyDialouge(
+                                          title,
+                                          snapshot
+                                              .child("id")
+                                              .value
+                                              .toString());
+                                    },
+                                    title: Text("edit"),
+                                  ),
+                                ),
+                                PopupMenuItem(
+                                  child: ListTile(
+                                    title: Text("delete"),
+                                    onTap: (){
+                                      ref.child(snapshot.child("id").value.toString()).remove();
+                                    },
+                                  ),
+                                ),
+                              ];
+                            }),
                       );
-                    }else if(title.toLowerCase().contains(searchCon.text.toLowerCase())){
+                    } else if (title
+                        .toLowerCase()
+                        .contains(searchCon.text.toLowerCase())) {
                       return ListTile(
                         title: Text(snapshot.child("title").value.toString()),
                       );
                     }
                     return Container();
-
                   }),
             )
           ],

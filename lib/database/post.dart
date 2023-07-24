@@ -38,10 +38,11 @@ class _UserPostsState extends State<UserPosts> {
                   setState(() {
                     isLoading = true;
                   });
-                  databaseRef.child(DateTime.now().millisecondsSinceEpoch.toString()).child("comments").set(
+                  String id=DateTime.now().millisecondsSinceEpoch.toString();
+                  databaseRef.child(id).set(
                     {
-                      "title":"who r you",
-                      "id": textCon.text.toString(),
+                      "title":textCon.text,
+                      "id": id,
                     },
                   ).then((value) {
                     ScaffoldMessenger.of(context)
