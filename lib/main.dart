@@ -1,10 +1,8 @@
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:learn_firebase_flutter/practise.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import 'database/post.dart';
+import 'database/chat screen.dart';
 import 'database/show_post.dart';
 import 'email_password/email_pass_signin.dart';
 import 'email_password/email_pass_signup.dart';
@@ -22,15 +20,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-
-
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(primarySwatch: Colors.brown),
-      home:
-      RealTimePractise()
-     // ShowPost()
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(primarySwatch: Colors.brown),
+        home: StreamBuilder(
+          stream: FirebaseAuth.instance.,
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {},
+            child: ChatScreen())
+        //RealTimePractise()
+        // ShowPost()
 
-    );
+        );
   }
 }
