@@ -1,8 +1,9 @@
 import 'dart:io';
 
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart 'as fstorage;
+import 'package:firebase_storage/firebase_storage.dart ' as fstorage;
 
 class ImageStore extends StatefulWidget {
   const ImageStore({super.key});
@@ -12,11 +13,15 @@ class ImageStore extends StatefulWidget {
 }
 
 class _ImageStoreState extends State<ImageStore> {
-
   File? imgFile;
   final picker = ImagePicker();
+  final dbRef = FirebaseDatabase.instance.ref("images");
 
-  fstorage.FirebaseStorage firebaseStorage=fstorage.FirebaseStorage.instance;
+
+
+
+
+  fstorage.FirebaseStorage firebaseStorage = fstorage.FirebaseStorage.instance;
 
   getImage() async {
     final pickedFile =
@@ -51,7 +56,20 @@ class _ImageStoreState extends State<ImageStore> {
                     : Icon(Icons.photo),
               ),
             ),
-            ElevatedButton(onPressed: () {}, child: Text("upload"))
+            ElevatedButton(
+                onPressed: () async{
+                  fstorage.Reference ref = fstorage.FirebaseStorage.instance
+                      .ref('/allImages/'+'22');
+                  fstorage.UploadTask uploadTask =
+                      ref.putFile(imgFile!.absolute);
+                  await Future.value(uploadTask);
+                  var newUrl=await ref.getDownloadURL();
+
+                  dbRef.child("1").set({
+                    "imageUrl":newUrl.toString()
+                  });
+                },
+                child: Text("upload"))
           ],
         ),
       ),
